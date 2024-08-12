@@ -7,10 +7,60 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model users {
-  id       String    @id @default(uuid())
-  nome     String
-  email    String @unique
-  telefone String
-  senha    String
+model user {
+  id            String      @id @default(uuid())
+  nome          String
+  telefone      String
+  email         String      @unique
+  senha         String
+  profissao     String
+  rg            String
+  cpf           String
+  type          String
+  estado_civil  String
+  naturalidade  String
+  nome_solteiro Boolean
+  usuario_id    String?
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
+  endereco      endereco?
+  pagamento     pagamento?
+  documentos    documento[]
+}
+
+model endereco {
+  id         String   @id @default(uuid())
+  estado     String
+  cidade     String
+  pais       String
+  cep        String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user   user?   @relation(fields: [userId], references: [id])
+  userId String? @unique
+}
+
+model documento {
+  id         String   @id @default(uuid())
+  url        String
+  nome       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user   user   @relation(fields: [userId], references: [id])
+  userId String
+}
+
+model pagamento {
+  id          String   @id @default(uuid())
+  porcentagem String
+  total       Int      @default(4000)
+  valor_pago  Int
+  pago        Boolean
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  user   user?   @relation(fields: [userId], references: [id])
+  userId String? @unique
 }
