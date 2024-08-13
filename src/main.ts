@@ -7,8 +7,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const options = new DocumentBuilder()
-    .setTitle('API ELECTRIC POWER')
-    .setDescription('Documentation for API by Electric Power')
+    .setTitle('API DIVORCIO WEB')
+    .setDescription('Documentation for API by Divorcio Web')
     .setVersion('1.0')
     .addBearerAuth(
       {

@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, MinLength, IsEmail, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  MinLength,
+  IsEmail,
+  IsBoolean,
+} from 'class-validator';
 
 export class AddressDTO {
   @ApiProperty({
@@ -88,13 +94,6 @@ export class UserDTO {
   })
   @IsString()
   @IsNotEmpty()
-  type: string;
-
-  @ApiProperty({
-    example: 'string',
-  })
-  @IsString()
-  @IsNotEmpty()
   estado_civil: string;
 
   @ApiProperty({
@@ -121,4 +120,21 @@ export class UserDTO {
     description: 'Endereço do usuário',
   })
   endereco: AddressDTO;
+}
+
+export class ConjugeDTO {
+  @ApiProperty({
+    example: 'string',
+  })
+  @IsString()
+  @IsNotEmpty()
+  nome: string;
+
+  @ApiProperty({
+    example: 'string',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
 }

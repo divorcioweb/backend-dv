@@ -10,16 +10,16 @@ datasource db {
 model user {
   id            String      @id @default(uuid())
   nome          String
-  telefone      String
+  telefone      String?
   email         String      @unique
   senha         String
-  profissao     String
-  rg            String
-  cpf           String
-  type          String
-  estado_civil  String
-  naturalidade  String
-  nome_solteiro Boolean
+  profissao     String?
+  rg            String?
+  cpf           String?
+  type          String?
+  estado_civil  String?
+  naturalidade  String?
+  nome_solteiro Boolean?
   usuario_id    String?
   created_at    DateTime    @default(now())
   updated_at    DateTime    @updatedAt
@@ -30,10 +30,10 @@ model user {
 
 model endereco {
   id         String   @id @default(uuid())
-  estado     String
-  cidade     String
-  pais       String
-  cep        String
+  estado     String?
+  cidade     String?
+  pais       String?
+  cep        String?
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
@@ -54,9 +54,9 @@ model documento {
 
 model pagamento {
   id          String   @id @default(uuid())
-  porcentagem String
+  porcentagem Int?
   total       Int      @default(4000)
-  valor_pago  Int
+  valor_pago  Int?
   pago        Boolean
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
