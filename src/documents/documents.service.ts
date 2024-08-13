@@ -38,4 +38,16 @@ export class DocumentsService {
 
     return document;
   }
+
+  async findMyDocs(token: string) {
+    const userDecoded = await this.jwtService.decode(token);
+
+    const myDocs = await this.db.documento.findMany({
+      where: {
+        userId: userDecoded.id,
+      },
+    });
+
+    return myDocs;
+  }
 }

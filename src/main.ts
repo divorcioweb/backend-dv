@@ -10,6 +10,14 @@ async function bootstrap() {
     .setTitle('API ELECTRIC POWER')
     .setDescription('Documentation for API by Electric Power')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: '',
+      },
+      'access-token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
