@@ -3,12 +3,14 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConnectionService } from 'src/connection/connection.service';
 import * as bcrypt from 'bcrypt';
 import { ConjugeDTO, UserDTO } from './users.dto';
+import { ResendService } from 'src/resend/resend.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly db: ConnectionService,
     private readonly jwtService: JwtService,
+    private readonly resendService: ResendService,
   ) {}
 
   async findAll() {
@@ -158,6 +160,8 @@ export class UsersService {
         usuario_id: conjugeCreated.id,
       },
     });
+
+    await this.resendService.sendConjuge();
 
     return user;
   }
