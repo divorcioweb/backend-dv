@@ -29,10 +29,13 @@ export class AuthService {
   async auth({ email, senha }: { email: string; senha: string }) {
     const user = await this.validateUser(email, senha);
     return {
-      token: this.jwtService.sign(user, {
-        secret: process.env.KEY_SECRET_JWT as string,
-        expiresIn: '24h',
-      }),
+      token: this.jwtService.sign(
+        { id: user.id },
+        {
+          secret: process.env.KEY_SECRET_JWT as string,
+          expiresIn: '24h',
+        },
+      ),
     };
   }
 }

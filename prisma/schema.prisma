@@ -9,14 +9,14 @@ datasource db {
 
 model user {
   id            String      @id @default(uuid())
-  nome          String
+  nome          String?
   telefone      String?
   email         String      @unique
   senha         String
   profissao     String?
   rg            String?
   cpf           String?
-  type          String?
+  type          Int?
   estado_civil  String?
   naturalidade  String?
   nome_solteiro Boolean?
@@ -29,13 +29,14 @@ model user {
 }
 
 model endereco {
-  id         String   @id @default(uuid())
-  estado     String?
-  cidade     String?
-  pais       String?
-  cep        String?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id          String   @id @default(uuid())
+  complemento String?
+  estado      String?
+  cidade      String?
+  pais        String?
+  cep         String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
 
   user   user?   @relation(fields: [userId], references: [id])
   userId String? @unique

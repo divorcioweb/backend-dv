@@ -1,16 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { Resend } from 'resend';
+import { ConjugeDTO } from 'src/users/users.dto';
+import 'dotenv/config';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 @Injectable()
 export class ResendService {
-  async sendConjuge() {
+  async sendConjuge(conjuge: ConjugeDTO) {
     await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: ['2003silvagui@gmail.com', 'ytgui01@gmail.com'],
+      from: 'Divórcio Web <divorcioweb@thegenius.tech>',
+      to: [conjuge.email],
       subject: 'Convite',
-      html: '<strong>it works!</strong>',
+      html: '<strong>{conjuge.nome} voce foi convidado para divorcio web</strong>',
     });
   }
 }
