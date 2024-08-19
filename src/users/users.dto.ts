@@ -63,6 +63,22 @@ export class AddressDTO {
   @IsString()
   cep: string;
 }
+export class ConjugeDTO {
+  @ApiProperty({
+    example: 'string',
+  })
+  @IsString()
+  @IsNotEmpty()
+  nome: string;
+
+  @ApiProperty({
+    example: 'string',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+}
 
 export class UpdateDTO {
   @ApiProperty({
@@ -113,21 +129,4 @@ export class UpdateDTO {
   })
   endereco: AddressDTO;
   conjuge: ConjugeDTO;
-}
-
-export class ConjugeDTO {
-  @ApiProperty({
-    example: 'string',
-  })
-  @IsString()
-  @IsNotEmpty()
-  nome: string;
-
-  @ApiProperty({
-    example: 'string',
-  })
-  @IsString()
-  @IsNotEmpty()
-  @IsEmail()
-  email: string;
 }

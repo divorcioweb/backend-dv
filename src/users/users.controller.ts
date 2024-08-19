@@ -1,4 +1,13 @@
-import { Body, Controller, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateDTO, UserDTO } from './users.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -17,9 +26,23 @@ export class UsersController {
   @Patch('update')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access-token')
-  async updateUser(@Body() body: UpdateDTO, @Req() request) {
+  async updateUserOne(@Body() body: UpdateDTO, @Req() request) {
     const token = request.headers.authorization.split(' ')[1];
-    return await this.usersService.update(token, body);
+    return await this.usersService.updateOne(token, body);
+  }
+
+  @Get('clientes')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  async findAll() {
+    return await this.usersService.findAllFilter();
+  }
+
+  @Get('clientes/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  async findAllMoreInfo(@Param('id') id: string) {
+    return await this.usersService.findAllFilterMoreInfo(id);
   }
 
   // @Post('register/conjuge')

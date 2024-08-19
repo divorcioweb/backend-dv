@@ -32,7 +32,7 @@ export class DocumentsService {
       data: {
         nome: Key,
         url: Location,
-        userId: userDecoded.id,
+        user_id: userDecoded.id,
       },
     });
 
@@ -44,7 +44,7 @@ export class DocumentsService {
 
     const myDocs = await this.db.documento.findMany({
       where: {
-        userId: userDecoded.id,
+        user_id: userDecoded.id,
       },
     });
 

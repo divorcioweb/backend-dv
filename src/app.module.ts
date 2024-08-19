@@ -6,6 +6,7 @@ import { ConnectionService } from './connection/connection.service';
 import { ConnectionModule } from './connection/connection.module';
 import { DocumentsModule } from './documents/documents.module';
 import { ResendService } from './resend/resend.service';
+import { DatesModule } from './dates/dates.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ResendService } from './resend/resend.service';
     AuthModule,
     ConnectionModule,
     DocumentsModule,
+    DatesModule,
   ],
   controllers: [],
   providers: [ConnectionService, ResendService],

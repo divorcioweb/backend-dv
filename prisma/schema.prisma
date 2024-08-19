@@ -20,12 +20,19 @@ model user {
   estado_civil  String?
   naturalidade  String?
   nome_solteiro Boolean?
-  usuario_id    String?
+  is_admin      Boolean?
+  status        String?
   created_at    DateTime    @default(now())
   updated_at    DateTime    @updatedAt
   endereco      endereco?
   pagamento     pagamento?
   documentos    documento[]
+
+  usuario_vinculado user?   @relation("UserToUser", fields: [usuario_id], references: [id])
+  usuario_id        String? @unique
+
+  conjuge user? @relation("UserToUser")
+  date    date?
 }
 
 model endereco {
@@ -38,8 +45,8 @@ model endereco {
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
-  user   user?   @relation(fields: [userId], references: [id])
-  userId String? @unique
+  user    user?   @relation(fields: [user_id], references: [id])
+  user_id String? @unique
 }
 
 model documento {
@@ -49,8 +56,8 @@ model documento {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  user   user   @relation(fields: [userId], references: [id])
-  userId String
+  user    user   @relation(fields: [user_id], references: [id])
+  user_id String
 }
 
 model pagamento {
@@ -62,6 +69,16 @@ model pagamento {
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 
-  user   user?   @relation(fields: [userId], references: [id])
-  userId String? @unique
+  user    user?   @relation(fields: [user_id], references: [id])
+  user_id String? @unique
+}
+
+model date {
+  id       String @id @default(uuid())
+  date     String
+  time     String
+  datetime DateTime
+
+  user    user?   @relation(fields: [user_id], references: [id])
+  user_id String? @unique
 }

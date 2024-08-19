@@ -1,5 +1,9 @@
 import { JwtService } from '@nestjs/jwt';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ConnectionService } from 'src/connection/connection.service';
 import * as bcrypt from 'bcrypt';
 import { ConjugeDTO, UpdateDTO, UserDTO } from './users.dto';
@@ -36,6 +40,8 @@ export class UsersService {
         email: user.email,
         telefone: user.telefone,
         senha: bcrypt.hashSync(user.senha, 10),
+        is_admin: false,
+        status: 'Aguardando finalizar cadastro',
         type: 1,
       },
     });
@@ -46,7 +52,7 @@ export class UsersService {
         cidade: null,
         estado: null,
         pais: null,
-        userId: userCreated.id,
+        user_id: userCreated.id,
       },
     });
 
@@ -55,7 +61,7 @@ export class UsersService {
         pago: false,
         porcentagem: null,
         valor_pago: null,
-        userId: userCreated.id,
+        user_id: userCreated.id,
       },
     });
 
@@ -78,6 +84,7 @@ export class UsersService {
         nome_solteiro: null,
         profissao: null,
         type: 2,
+        status: 'Aguardando finalizar cadastro',
         usuario_id: userDecoded.id,
         senha: bcrypt.hashSync(conjuge.email, 10),
       },
@@ -105,7 +112,7 @@ export class UsersService {
         cidade: null,
         estado: null,
         pais: null,
-        userId: conjugeCreated.id,
+        user_id: conjugeCreated.id,
       },
     });
 
@@ -114,7 +121,7 @@ export class UsersService {
         pago: false,
         porcentagem: null,
         valor_pago: null,
-        userId: conjugeCreated.id,
+        user_id: conjugeCreated.id,
       },
     });
 
@@ -124,6 +131,7 @@ export class UsersService {
       },
       data: {
         usuario_id: conjugeCreated.id,
+        status: 'Aguardando envio de documentos',
       },
     });
 
@@ -135,7 +143,7 @@ export class UsersService {
     };
   }
 
-  async update(token: string, body: UpdateDTO) {
+  async updateOne(token: string, body: UpdateDTO) {
     const userDecoded = await this.jwtService.decode(token);
     const userAlreadyRegistered = await this.db.user.findFirst({
       where: {
@@ -175,7 +183,7 @@ export class UsersService {
 
     await this.db.endereco.update({
       where: {
-        userId: userDecoded.id,
+        user_id: userDecoded.id,
       },
       data: {
         cep,
@@ -192,6 +200,112 @@ export class UsersService {
       message: 'Informações salva com sucesso!',
       error: false,
     };
+  }
+
+  async findAllFilter() {
+    return await this.db.user.findMany({
+      where: {
+        is_admin: false,
+        type: 1,
+      },
+      select: {
+        id: true,
+        nome: true,
+        email: true,
+        conjuge: {
+          select: {
+            id: true,
+            nome: true,
+            email: true,
+          },
+        },
+        pagamento: {
+          select: {
+            pago: true,
+          },
+        },
+      },
+    });
+  }
+
+  async findAllFilterMoreInfo(id: string) {
+    const user = await this.db.user.findFirst({
+      where: {
+        id: id,
+      },
+      select: {
+        id: true,
+        nome: true,
+        cpf: true,
+        rg: true,
+        email: true,
+        estado_civil: true,
+        naturalidade: true,
+        nome_solteiro: true,
+        profissao: true,
+        status: true,
+        telefone: true,
+        type: true,
+        conjuge: {
+          select: {
+            id: true,
+            nome: true,
+            cpf: true,
+            rg: true,
+            email: true,
+            estado_civil: true,
+            naturalidade: true,
+            nome_solteiro: true,
+            profissao: true,
+            status: true,
+            telefone: true,
+            type: true,
+            pagamento: {
+              select: {
+                pago: true,
+                valor_pago: true,
+                porcentagem: true,
+                total: true,
+              },
+            },
+            documentos: true,
+            endereco: {
+              select: {
+                cep: true,
+                cidade: true,
+                complemento: true,
+                pais: true,
+                estado: true,
+              },
+            },
+          },
+        },
+        pagamento: {
+          select: {
+            pago: true,
+            valor_pago: true,
+            porcentagem: true,
+            total: true,
+          },
+        },
+        documentos: true,
+        endereco: {
+          select: {
+            cep: true,
+            cidade: true,
+            complemento: true,
+            pais: true,
+            estado: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Nenhum usuário foi encontrado');
+    }
+
+    return user;
   }
 
   async findByEmail(email: string) {
