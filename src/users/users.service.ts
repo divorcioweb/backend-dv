@@ -6,7 +6,12 @@ import {
 } from '@nestjs/common';
 import { ConnectionService } from 'src/connection/connection.service';
 import * as bcrypt from 'bcrypt';
-import { ConjugeDTO, UpdateDTO, UserDTO } from './users.dto';
+import {
+  ConjugeDTO,
+  ForgotPasswordStepTwoDTO,
+  UpdateDTO,
+  UserDTO,
+} from './users.dto';
 import { ResendService } from 'src/resend/resend.service';
 
 @Injectable()
@@ -306,6 +311,79 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async sendEmailCode(email: string) {
+    const user = await this.findByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado.');
+    }
+
+    const resetPass = await this.db.resetpassword.findFirst({
+      where: {
+        email,
+      },
+    });
+    if (resetPass) {
+      await this.db.resetpassword.delete({
+        where: {
+          id: resetPass.id,
+        },
+      });
+    }
+
+    const resetCode = Math.floor(1000 + Math.random() * 9000).toString();
+
+    await this.db.resetpassword.create({
+      data: {
+        code: resetCode,
+        email,
+      },
+    });
+
+    await this.resendService.sendResetPasswordEmail(email, resetCode);
+
+    return { message: 'Código de recuperação enviado para o email.' };
+  }
+
+  async forgotPassword({ email, code, senha }: ForgotPasswordStepTwoDTO) {
+    const user = await this.findByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado.');
+    }
+
+    const resetPassword = await this.db.resetpassword.findFirst({
+      where: {
+        email: email,
+      },
+      select: {
+        code: true,
+        id: true,
+      },
+    });
+
+    if (!resetPassword || resetPassword.code !== code) {
+      return { message: 'Codigo invalido ou expirou.' };
+    }
+
+    await this.db.resetpassword.delete({
+      where: {
+        id: resetPassword.id,
+      },
+    });
+
+    await this.db.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        senha: bcrypt.hashSync(senha, 10),
+      },
+    });
+
+    return { message: 'Senha alterada com sucesso.' };
   }
 
   async findByEmail(email: string) {

@@ -7,6 +7,40 @@ import {
   MinLength,
 } from 'class-validator';
 
+export class ForgotPasswordStepOneDTO {
+  @ApiProperty({
+    example: 'string',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+}
+
+export class ForgotPasswordStepTwoDTO {
+  @ApiProperty({
+    example: 'string',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @ApiProperty({
+    example: 'string',
+  })
+  @IsString()
+  @IsNotEmpty()
+  code: string;
+
+  @ApiProperty({
+    example: 'string',
+  })
+  @IsString()
+  @IsNotEmpty()
+  senha: string;
+}
+
 export class UserDTO {
   @ApiProperty({
     example: 'string',

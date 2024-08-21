@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateDTO, UserDTO } from './users.dto';
+import { ForgotPasswordStepOneDTO, ForgotPasswordStepTwoDTO, UpdateDTO, UserDTO } from './users.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 
@@ -43,6 +43,16 @@ export class UsersController {
   @ApiBearerAuth('access-token')
   async findAllMoreInfo(@Param('id') id: string) {
     return await this.usersService.findAllFilterMoreInfo(id);
+  }
+
+  @Post('forgot-password/code')
+  async sendCode(@Body() body: ForgotPasswordStepOneDTO) {
+    return await this.usersService.sendEmailCode(body.email);
+  }
+
+  @Patch('forgot-password')
+  async fotgotPassowrd(@Body() body: ForgotPasswordStepTwoDTO) {
+    return await this.usersService.forgotPassword(body);
   }
 
   // @Post('register/conjuge')

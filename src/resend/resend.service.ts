@@ -15,4 +15,13 @@ export class ResendService {
       html: '<strong>{conjuge.nome} voce foi convidado para divorcio web</strong>',
     });
   }
+
+  async sendResetPasswordEmail(email: string, code: string) {
+    await resend.emails.send({
+      from: 'Divórcio Web <divorcioweb@thegenius.tech>',
+      to: email,
+      subject: 'Recuperação de Senha',
+      text: `Seu código de recuperação é: ${code}`,
+    });
+  }
 }

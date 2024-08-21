@@ -31,8 +31,8 @@ model user {
   usuario_vinculado user?   @relation("UserToUser", fields: [usuario_id], references: [id])
   usuario_id        String? @unique
 
-  conjuge user? @relation("UserToUser")
-  date    date?
+  conjuge       user?          @relation("UserToUser")
+  date          date?
 }
 
 model endereco {
@@ -74,11 +74,18 @@ model pagamento {
 }
 
 model date {
-  id       String @id @default(uuid())
+  id       String   @id @default(uuid())
   date     String
   time     String
   datetime DateTime
 
   user    user?   @relation(fields: [user_id], references: [id])
   user_id String? @unique
+}
+
+model resetpassword {
+  id         String   @id @default(uuid())
+  email      String
+  code       String
+  created_at DateTime @default(now())
 }
