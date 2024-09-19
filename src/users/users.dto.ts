@@ -162,5 +162,10 @@ export class UpdateDTO {
     description: 'Endereço do usuário',
   })
   endereco: AddressDTO;
+
+  @ApiProperty({
+    type: ConjugeDTO,
+    description: 'Informações do cônjuge',
+  })
   conjuge: ConjugeDTO;
 }
