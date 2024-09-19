@@ -23,14 +23,14 @@ export class UsersService {
   ) {}
 
   async findAll() {
-    return await this.db.user.findMany();
+    return await this.db.usuario.findMany();
   }
 
   async register(user: UserDTO): Promise<{
     message: string;
     error: boolean;
   }> {
-    const userAlreadyRegistered = await this.db.user.findFirst({
+    const userAlreadyRegistered = await this.db.usuario.findFirst({
       where: {
         email: user.email,
       },
@@ -40,7 +40,7 @@ export class UsersService {
       throw new BadRequestException('Usuário já cadastrado!');
     }
 
-    const userCreated = await this.db.user.create({
+    const userCreated = await this.db.usuario.create({
       data: {
         email: user.email,
         telefone: user.telefone,
@@ -57,7 +57,7 @@ export class UsersService {
         cidade: null,
         estado: null,
         pais: null,
-        user_id: userCreated.id,
+        usuario_id: userCreated.id,
       },
     });
 
@@ -66,7 +66,7 @@ export class UsersService {
         pago: false,
         porcentagem: null,
         valor_pago: null,
-        user_id: userCreated.id,
+        usuario_id: userCreated.id,
       },
     });
 
@@ -77,7 +77,7 @@ export class UsersService {
   }
 
   async registerConjuge(userDecoded, conjuge: ConjugeDTO) {
-    const conjugeCreated = await this.db.user.create({
+    const conjugeCreated = await this.db.usuario.create({
       data: {
         nome: conjuge.nome,
         email: conjuge.email,
@@ -106,8 +106,8 @@ export class UsersService {
         telefone: true,
         type: true,
         usuario_id: true,
-        created_at: true,
-        updated_at: true,
+        criado_em: true,
+        atualizado_em: true,
       },
     });
 
@@ -117,7 +117,7 @@ export class UsersService {
         cidade: null,
         estado: null,
         pais: null,
-        user_id: conjugeCreated.id,
+        usuario_id: conjugeCreated.id,
       },
     });
 
@@ -126,11 +126,11 @@ export class UsersService {
         pago: false,
         porcentagem: null,
         valor_pago: null,
-        user_id: conjugeCreated.id,
+        usuario_id: conjugeCreated.id,
       },
     });
 
-    await this.db.user.update({
+    await this.db.usuario.update({
       where: {
         id: userDecoded.id,
       },
@@ -150,7 +150,7 @@ export class UsersService {
 
   async updateOne(token: string, body: UpdateDTO) {
     const userDecoded = await this.jwtService.decode(token);
-    const userAlreadyRegistered = await this.db.user.findFirst({
+    const userAlreadyRegistered = await this.db.usuario.findFirst({
       where: {
         email: body.conjuge.email,
       },
@@ -171,7 +171,7 @@ export class UsersService {
     } = body;
     const { cep, cidade, complemento, estado, pais } = body.endereco;
 
-    await this.db.user.update({
+    await this.db.usuario.update({
       where: {
         id: userDecoded.id,
       },
@@ -188,7 +188,7 @@ export class UsersService {
 
     await this.db.endereco.update({
       where: {
-        user_id: userDecoded.id,
+        usuario_id: userDecoded.id,
       },
       data: {
         cep,
@@ -208,7 +208,7 @@ export class UsersService {
   }
 
   async findAllFilter() {
-    return await this.db.user.findMany({
+    return await this.db.usuario.findMany({
       where: {
         is_admin: false,
         type: 1,
@@ -234,7 +234,7 @@ export class UsersService {
   }
 
   async findAllFilterMoreInfo(id: string) {
-    const user = await this.db.user.findFirst({
+    const user = await this.db.usuario.findFirst({
       where: {
         id: id,
       },
@@ -337,7 +337,7 @@ export class UsersService {
 
     await this.db.resetpassword.create({
       data: {
-        code: resetCode,
+        codigo: resetCode,
         email,
       },
     });
@@ -347,7 +347,7 @@ export class UsersService {
     return { message: 'Código de recuperação enviado para o email.' };
   }
 
-  async forgotPassword({ email, code, senha }: ForgotPasswordStepTwoDTO) {
+  async forgotPassword({ email, codigo, senha }: ForgotPasswordStepTwoDTO) {
     const user = await this.findByEmail(email);
 
     if (!user) {
@@ -359,12 +359,12 @@ export class UsersService {
         email: email,
       },
       select: {
-        code: true,
+        codigo: true,
         id: true,
       },
     });
 
-    if (!resetPassword || resetPassword.code !== code) {
+    if (!resetPassword || resetPassword.codigo !== codigo) {
       return { message: 'Codigo invalido ou expirou.' };
     }
 
@@ -374,7 +374,7 @@ export class UsersService {
       },
     });
 
-    await this.db.user.update({
+    await this.db.usuario.update({
       where: {
         id: user.id,
       },
@@ -387,7 +387,7 @@ export class UsersService {
   }
 
   async findByEmail(email: string) {
-    return await this.db.user.findFirst({
+    return await this.db.usuario.findFirst({
       where: {
         email: email,
       },

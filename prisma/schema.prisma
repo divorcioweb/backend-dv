@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
+model usuario {
   id            String      @id @default(uuid())
   nome          String?
   telefone      String?
@@ -22,70 +22,76 @@ model user {
   nome_solteiro Boolean?
   is_admin      Boolean?
   status        String?
-  created_at    DateTime    @default(now())
-  updated_at    DateTime    @updatedAt
+  criado_em     DateTime    @default(now())
+  atualizado_em DateTime    @updatedAt
   endereco      endereco?
   pagamento     pagamento?
   documentos    documento[]
 
-  usuario_vinculado user?   @relation("UserToUser", fields: [usuario_id], references: [id])
-  usuario_id        String? @unique
+  usuario_vinculado usuario? @relation("UserToUser", fields: [usuario_id], references: [id])
+  usuario_id        String?  @unique
 
-  conjuge       user?          @relation("UserToUser")
-  date          date?
+  conjuge usuario? @relation("UserToUser")
+  data    data?
 }
 
 model endereco {
-  id          String   @id @default(uuid())
-  complemento String?
-  estado      String?
-  cidade      String?
-  pais        String?
-  cep         String?
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  id            String   @id @default(uuid())
+  complemento   String?
+  estado        String?
+  cidade        String?
+  pais          String?
+  cep           String?
+  criado_em     DateTime @default(now())
+  atualizado_em DateTime @updatedAt
 
-  user    user?   @relation(fields: [user_id], references: [id])
-  user_id String? @unique
+  user       usuario? @relation(fields: [usuario_id], references: [id])
+  usuario_id String?  @unique
 }
 
 model documento {
-  id         String   @id @default(uuid())
-  url        String
-  nome       String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id            String   @id @default(uuid())
+  url           String
+  nome          String
+  criado_em     DateTime @default(now())
+  atualizado_em DateTime @updatedAt
 
-  user    user   @relation(fields: [user_id], references: [id])
-  user_id String
+  user       usuario @relation(fields: [usuario_id], references: [id])
+  usuario_id String
 }
 
 model pagamento {
-  id          String   @id @default(uuid())
-  porcentagem Int?
-  total       Int      @default(4000)
-  valor_pago  Int?
-  pago        Boolean
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  id            String   @id @default(uuid())
+  porcentagem   Int?
+  total         Int      @default(4000)
+  valor_pago    Int?
+  pago          Boolean
+  criado_em     DateTime @default(now())
+  atualizado_em DateTime @updatedAt
 
-  user    user?   @relation(fields: [user_id], references: [id])
-  user_id String? @unique
+  user       usuario? @relation(fields: [usuario_id], references: [id])
+  usuario_id String?  @unique
 }
 
-model date {
-  id       String   @id @default(uuid())
-  date     String
-  time     String
-  datetime DateTime
+model data {
+  id        String   @id @default(uuid())
+  data      String
+  time      String
+  data_hora DateTime
 
-  user    user?   @relation(fields: [user_id], references: [id])
-  user_id String? @unique
+  user       usuario? @relation(fields: [usuario_id], references: [id])
+  usuario_id String?  @unique
+}
+
+model evento {
+  id     String @id @default(uuid())
+  titulo String
+  data   String
 }
 
 model resetpassword {
-  id         String   @id @default(uuid())
-  email      String
-  code       String
-  created_at DateTime @default(now())
+  id        String   @id @default(uuid())
+  email     String
+  codigo    String
+  criado_em DateTime @default(now())
 }

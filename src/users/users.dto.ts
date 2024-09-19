@@ -31,7 +31,7 @@ export class ForgotPasswordStepTwoDTO {
   })
   @IsString()
   @IsNotEmpty()
-  code: string;
+  codigo: string;
 
   @ApiProperty({
     example: 'string',

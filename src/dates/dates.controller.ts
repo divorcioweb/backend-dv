@@ -12,7 +12,7 @@ import { DateDTO } from './dates.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 
-@ApiTags('Dates')
+@ApiTags('Datas')
 @Controller('dates')
 export class DatesController {
   constructor(private readonly datesService: DatesService) {}

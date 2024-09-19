@@ -28,9 +28,9 @@ export class DatesService {
     });
     const formattedTime = timeFormatter.format(date);
 
-    const existingDate = await this.db.date.findFirst({
+    const existingDate = await this.db.data.findFirst({
       where: {
-        datetime: {
+        data_hora: {
           equals: date.toISOString(),
         },
       },
@@ -42,25 +42,25 @@ export class DatesService {
     }
 
     // Criar o novo registro
-    return await this.db.date.create({
+    return await this.db.data.create({
       data: {
-        date: formattedDate,
+        data: formattedDate,
         time: formattedTime,
-        datetime: date,
+        data_hora: date,
       },
     });
   }
 
   async datesAvailable() {
-    return await this.db.date.findMany({
+    return await this.db.data.findMany({
       where: {
-        user_id: null,
+        usuario_id: null,
       },
     });
   }
 
   async remove(id: string) {
-    const existingDate = await this.db.date.findFirst({
+    const existingDate = await this.db.data.findFirst({
       where: {
         id: id,
       },
@@ -70,7 +70,7 @@ export class DatesService {
         'Já existe um registro com a mesma data e hora.',
       );
     }
-    await this.db.date.delete({
+    await this.db.data.delete({
       where: {
         id: id,
       },

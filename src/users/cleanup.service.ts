@@ -10,7 +10,7 @@ export class CleanupService {
   async handleCron() {
     await this.db.resetpassword.deleteMany({
       where: {
-        created_at: {
+        criado_em: {
           lt: new Date(Date.now() - 3 * 60 * 1000), // 3 minutos atrás
         },
       },

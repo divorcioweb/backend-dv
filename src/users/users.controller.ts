@@ -13,7 +13,7 @@ import { ForgotPasswordStepOneDTO, ForgotPasswordStepTwoDTO, UpdateDTO, UserDTO 
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 
-@ApiTags('Users')
+@ApiTags('Usuários')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

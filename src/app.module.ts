@@ -7,6 +7,7 @@ import { ConnectionModule } from './connection/connection.module';
 import { DocumentsModule } from './documents/documents.module';
 import { ResendService } from './resend/resend.service';
 import { DatesModule } from './dates/dates.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { DatesModule } from './dates/dates.module';
     ConnectionModule,
     DocumentsModule,
     DatesModule,
+    EventsModule,
   ],
   controllers: [],
   providers: [ConnectionService, ResendService],

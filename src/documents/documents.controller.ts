@@ -13,7 +13,7 @@ import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { MultipartDTO } from './documents.dto';
 
-@ApiTags('Documents')
+@ApiTags('Documentos')
 @Controller('documents')
 export class DocumentsController {
   constructor(private readonly documentsService: DocumentsService) {}
