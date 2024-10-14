@@ -7,6 +7,7 @@ import {
 import { ConnectionService } from 'src/connection/connection.service';
 import * as bcrypt from 'bcrypt';
 import {
+  ChangePasswordDTO,
   ConjugeDTO,
   ForgotPasswordStepTwoDTO,
   UpdateDTO,
@@ -384,6 +385,43 @@ export class UsersService {
     });
 
     return { message: 'Senha alterada com sucesso.' };
+  }
+
+  async changePassword(token: string, body: ChangePasswordDTO) {
+    const userDecoded = await this.jwtService.decode(token);
+
+    const user = await this.db.usuario.findUnique({
+      where: {
+        id: userDecoded.id,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado.');
+    }
+
+    const comparePasswordHashed = bcrypt.compareSync(
+      body.senha_atual,
+      user.senha,
+    );
+
+    if (!comparePasswordHashed) {
+      throw new BadRequestException('A senha atual está incorreta');
+    }
+
+    await this.db.usuario.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        senha: bcrypt.hashSync(body.nova_senha, 10),
+      },
+    });
+
+    return {
+      message: 'Senha atualizada com sucesso',
+      error: false,
+    };
   }
 
   async findByEmail(email: string) {

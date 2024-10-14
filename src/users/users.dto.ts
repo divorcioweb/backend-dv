@@ -17,6 +17,22 @@ export class ForgotPasswordStepOneDTO {
   email: string;
 }
 
+export class ChangePasswordDTO {
+  @ApiProperty({
+    example: 'string',
+  })
+  @IsString()
+  @IsNotEmpty()
+  senha_atual: string;
+
+  @ApiProperty({
+    example: 'string',
+  })
+  @IsString()
+  @IsNotEmpty()
+  nova_senha: string;
+}
+
 export class ForgotPasswordStepTwoDTO {
   @ApiProperty({
     example: 'string',

@@ -9,7 +9,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { ForgotPasswordStepOneDTO, ForgotPasswordStepTwoDTO, UpdateDTO, UserDTO } from './users.dto';
+import {
+  ChangePasswordDTO,
+  ForgotPasswordStepOneDTO,
+  ForgotPasswordStepTwoDTO,
+  UpdateDTO,
+  UserDTO,
+} from './users.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 
@@ -45,8 +51,16 @@ export class UsersController {
     return await this.usersService.findAllFilterMoreInfo(id);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  @Post('change-password')
+  async changePassword(@Body() body: ChangePasswordDTO, @Req() request) {
+    const token = request.headers.authorization.split(' ')[1];
+    return await this.usersService.changePassword(token, body);
+  }
+
   @Post('forgot-password/code')
-  async sendCode(@Body() body: ForgotPasswordStepOneDTO) {
+  async forgotPassword(@Body() body: ForgotPasswordStepOneDTO) {
     return await this.usersService.sendEmailCode(body.email);
   }
 
