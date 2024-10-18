@@ -8,9 +8,9 @@ generator client {
 // }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./database/db.db"
-  // url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // url      = "file:./database/db.db"
 }
 
 model usuario {
