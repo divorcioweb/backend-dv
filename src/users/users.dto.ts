@@ -171,6 +171,12 @@ export class UpdateDTO {
     example: false,
   })
   @IsBoolean()
+  nao_possui_filhos_menores: boolean;
+
+  @ApiProperty({
+    example: false,
+  })
+  @IsBoolean()
   nome_solteiro: boolean;
 
   @ApiProperty({

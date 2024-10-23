@@ -26,6 +26,7 @@ model usuario {
   estado_civil  String?
   naturalidade  String?
   nome_solteiro Boolean?
+  nao_possui_filhos_menores Boolean?
   is_admin      Boolean?
   status        String?
   criado_em     DateTime    @default(now())
