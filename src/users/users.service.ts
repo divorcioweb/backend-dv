@@ -148,7 +148,7 @@ export class UsersService {
       },
     });
 
-    await this.resendService.sendConjuge(conjuge);
+    await this.resendService.sendConjuge(conjugeCreated);
 
     return conjugeCreated;
   }
@@ -205,6 +205,21 @@ export class UsersService {
     });
 
     const conjuge = await this.registerConjuge(userDecoded, body.conjuge);
+
+    const divorceRecord = await this.db.divorcio.findFirst({
+      where: {
+        usuario_primario_id: userDecoded.id,
+      },
+    });
+
+    await this.db.divorcio.update({
+      where: {
+        id: divorceRecord.id,
+      },
+      data: {
+        usuario_secundario_id: conjuge.id,
+      },
+    });
 
     return {
       message: 'Informações salva com sucesso!',

@@ -16,10 +16,12 @@ datasource db {
 model divorcio {
   id String @id @default(uuid())
 
-  etapa  Int    @default(1)
-  status String @default("Início do serviço")
+  etapa                 Int       @default(1)
+  status                String    @default("Início do serviço")
   usuario_primario_id   String
   usuario_secundario_id String
+  
+  usuario               usuario[]
 }
 
 model usuario {
@@ -49,6 +51,9 @@ model usuario {
 
   conjuge usuario? @relation("UserToUser")
   data    data?
+
+  divorcio   divorcio? @relation(fields: [divorcio_id], references: [id])
+  divorcio_id String?
 }
 
 model endereco {

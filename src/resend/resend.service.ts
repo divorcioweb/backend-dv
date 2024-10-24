@@ -12,7 +12,7 @@ export class ResendService {
       from: 'Divórcio Web <divorcioweb@thegenius.tech>',
       to: [conjuge.email],
       subject: 'Convite',
-      html: '<strong>{conjuge.nome} voce foi convidado para divorcio web</strong>',
+      html: `<strong>${conjuge.nome} voce foi convidado para divorcio web <br/> Email: ${conjuge.email} <br/> Senha: ${conjuge.email} </strong>`,
     });
   }
 
