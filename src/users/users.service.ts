@@ -71,6 +71,13 @@ export class UsersService {
       },
     });
 
+    await this.db.divorcio.create({
+      data: {
+        usuario_primario_id: userCreated.id,
+        usuario_secundario_id: null,
+      },
+    });
+
     return {
       message: 'Usuário criado com sucesso!',
       error: false,
