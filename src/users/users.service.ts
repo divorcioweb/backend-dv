@@ -74,7 +74,7 @@ export class UsersService {
     await this.db.divorcio.create({
       data: {
         usuario_primario_id: userCreated.id,
-        usuario_secundario_id: null,
+        usuario_secundario_id: '',
       },
     });
 
@@ -150,10 +150,7 @@ export class UsersService {
 
     await this.resendService.sendConjuge(conjuge);
 
-    return {
-      message: 'Conjuge criado com sucesso!',
-      error: false,
-    };
+    return conjugeCreated;
   }
 
   async updateOne(token: string, body: UpdateDTO) {
@@ -207,7 +204,7 @@ export class UsersService {
       },
     });
 
-    await this.registerConjuge(userDecoded, body.conjuge);
+    const conjuge = await this.registerConjuge(userDecoded, body.conjuge);
 
     return {
       message: 'Informações salva com sucesso!',
