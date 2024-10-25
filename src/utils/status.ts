@@ -18,3 +18,15 @@ export const statusDivorcio = {
   17: 'Aguardando agendamento do conjuge',
   18: 'Escritura de divórcio pronta - disponível para download',
 };
+
+export const statusUsuario = {
+  1: 'Aguardando finalização de cadastro',
+  2: 'Cadastro Completo',
+  3: 'Aguardando pagamento',
+  4: 'Pagamento concluído',
+  5: 'Aguardando documentos',
+  6: 'Documentos enviados',
+  7: 'Video explicativo',
+  8: 'Envio de documentos',
+  9: 'Minuta do divórcio',
+};
