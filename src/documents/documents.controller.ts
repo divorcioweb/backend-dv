@@ -33,12 +33,24 @@ export class DocumentsController {
     return this.documentsService.create(file, token);
   }
 
-  @Post(':id')
+  @Post('several')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Upload multiple files',
-    type: 'multipart/form-data',
-    isArray: true,
+    schema: {
+      type: 'object',
+      properties: {
+        files: {
+          type: 'array',
+          items: {
+            type: 'string',
+            format: 'binary',
+          },
+        },
+      },
+    },
   })
   @UseInterceptors(FilesInterceptor('files'))
   async uploadFiles(
