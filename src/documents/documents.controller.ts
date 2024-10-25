@@ -54,7 +54,13 @@ export class DocumentsController {
   })
   @UseInterceptors(FilesInterceptor('files'))
   async uploadFiles(
-    @UploadedFiles() files: Express.Multer.File[],
+    @UploadedFiles()
+    files: {
+      content: string;
+      contentType: string;
+      nome: string;
+      tipo: string;
+    }[],
     @Req() request,
   ) {
     const token = request.headers.authorization.split(' ')[1];
