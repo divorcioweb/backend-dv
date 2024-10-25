@@ -79,7 +79,7 @@ export class DocumentsService {
       const document = await this.db.documento.create({
         data: {
           nome: file.nome,
-          url: `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.S3_REGION}.amazonaws.com/${userDecoded.email}-${file.nome}`,
+          url: `https://${process.env.S3_BUCKET_NAME}.s3.us-east-2.amazonaws.com/${userDecoded.email}-${file.nome}`,
           usuario_id: userDecoded.id,
         },
       });
