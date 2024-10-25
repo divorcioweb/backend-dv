@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Post,
@@ -36,25 +37,25 @@ export class DocumentsController {
   @Post('several')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access-token')
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    description: 'Upload multiple files',
-    schema: {
-      type: 'object',
-      properties: {
-        files: {
-          type: 'array',
-          items: {
-            type: 'string',
-            format: 'binary',
-          },
-        },
-      },
-    },
-  })
-  @UseInterceptors(FilesInterceptor('files'))
+  // @ApiConsumes('multipart/form-data')
+  // @ApiBody({
+  //   description: 'Upload multiple files',
+  //   schema: {
+  //     type: 'object',
+  //     properties: {
+  //       files: {
+  //         type: 'array',
+  //         items: {
+  //           type: 'string',
+  //           format: 'binary',
+  //         },
+  //       },
+  //     },
+  //   },
+  // })
+  // @UseInterceptors(FilesInterceptor('files'))
   async uploadFiles(
-    @UploadedFiles()
+    @Body()
     files: {
       content: string;
       contentType: string;
