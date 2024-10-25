@@ -50,16 +50,27 @@ export class DocumentsService {
     return document;
   }
 
-  async createFiles(files: Express.Multer.File[], token: string) {
+  async createFiles(
+    files: {
+      content: string;
+      contentType: string;
+      nome: string;
+      tipo: string;
+    }[],
+    token: string,
+  ) {
     const userDecoded = await this.jwtService.decode(token);
 
     const uploadedDocuments = [];
 
     for (const file of files) {
+      const buffer = Buffer.from(file.content, 'base64');
+
       const params = {
         Bucket: process.env.S3_BUCKET_NAME,
-        Key: file.originalname,
-        Body: file.buffer,
+        Key: `${userDecoded.email}-${file.tipo}/${file.nome}`,
+        Body: buffer,
+        ContentType: file.contentType,
       };
 
       const command = new PutObjectCommand(params);
@@ -67,8 +78,8 @@ export class DocumentsService {
 
       const document = await this.db.documento.create({
         data: {
-          nome: file.originalname,
-          url: `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.S3_REGION}.amazonaws.com/${file.originalname}`,
+          nome: file.nome,
+          url: `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.S3_REGION}.amazonaws.com/${userDecoded.email}-${file.nome}`,
           usuario_id: userDecoded.id,
         },
       });
