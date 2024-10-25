@@ -2,24 +2,13 @@ import { JwtService } from '@nestjs/jwt';
 import { Injectable } from '@nestjs/common';
 import { ConnectionService } from 'src/connection/connection.service';
 import * as AWS from 'aws-sdk';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
 @Injectable()
 export class DocumentsService {
-  private s3: S3Client;
-
   constructor(
     private readonly db: ConnectionService,
     private jwtService: JwtService,
-  ) {
-    this.s3 = new S3Client({
-      region: process.env.S3_REGION,
-      credentials: {
-        accessKeyId: process.env.S3_ACCESS_KEY,
-        secretAccessKey: process.env.S3_SECRET_ACCESS,
-      },
-    });
-  }
+  ) {}
 
   async create(file: Express.Multer.File, token: string) {
     const userDecoded = await this.jwtService.decode(token);
@@ -63,23 +52,27 @@ export class DocumentsService {
 
     const uploadedDocuments = [];
 
+    const s3 = new AWS.S3({
+      credentials: {
+        accessKeyId: process.env.S3_ACCESS_KEY,
+        secretAccessKey: process.env.S3_SECRET_ACCESS,
+      },
+    });
+
     for (const file of files) {
       const buffer = Buffer.from(file.content, 'base64');
 
       const params = {
         Bucket: process.env.S3_BUCKET_NAME,
-        Key: `${userDecoded.email}-${file.tipo}/${file.nome}`,
+        Key: file.nome,
         Body: buffer,
-        ContentType: file.contentType,
       };
+      const { Key, Location } = await s3.upload(params).promise();
 
-      const command = new PutObjectCommand(params);
-      await this.s3.send(command);
-
-      const document = await this.db.documento.create({
+      const document = this.db.documento.create({
         data: {
-          nome: file.nome,
-          url: `https://${process.env.S3_BUCKET_NAME}.s3.us-east-2.amazonaws.com/${userDecoded.email}-${file.nome}`,
+          nome: Key,
+          url: Location,
           usuario_id: userDecoded.id,
         },
       });
