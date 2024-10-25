@@ -29,7 +29,6 @@ export class DocumentsController {
   })
   @UseInterceptors(FileInterceptor('file'))
   async upload(@UploadedFile() file: Express.Multer.File, @Req() request) {
-    console.log('===========', file);
     const token = request.headers.authorization.split(' ')[1];
     return this.documentsService.create(file, token);
   }
@@ -64,7 +63,6 @@ export class DocumentsController {
     }[],
     @Req() request,
   ) {
-    console.log('===========', files);
     const token = request.headers.authorization.split(' ')[1];
     return this.documentsService.createFiles(files, token);
   }

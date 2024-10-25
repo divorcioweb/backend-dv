@@ -49,9 +49,6 @@ export class DocumentsService {
     token: string,
   ) {
     const userDecoded = await this.jwtService.decode(token);
-
-    const uploadedDocuments = [];
-
     const s3 = new AWS.S3({
       credentials: {
         accessKeyId: process.env.S3_ACCESS_KEY,
@@ -59,7 +56,7 @@ export class DocumentsService {
       },
     });
 
-    for (const file of files) {
+    const uploadPromises = files.map(async (file) => {
       const buffer = Buffer.from(file.content, 'base64');
 
       const params = {
@@ -67,9 +64,12 @@ export class DocumentsService {
         Key: file.nome,
         Body: buffer,
       };
+
+      // Fazendo o upload do arquivo
       const { Key, Location } = await s3.upload(params).promise();
 
-      const document = this.db.documento.create({
+      // Criando o documento na base de dados
+      const document = await this.db.documento.create({
         data: {
           nome: Key,
           url: Location,
@@ -77,8 +77,13 @@ export class DocumentsService {
         },
       });
 
-      uploadedDocuments.push(document);
-    }
+      console.log('here', document);
+
+      return document;
+    });
+
+    // Espera todos os uploads serem concluídos
+    const uploadedDocuments = await Promise.all(uploadPromises);
 
     return uploadedDocuments;
   }
