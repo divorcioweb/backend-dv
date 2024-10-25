@@ -5,12 +5,11 @@ import {
   Post,
   Req,
   UploadedFile,
-  UploadedFiles,
-  UseGuards,
+    UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { DocumentsService } from './documents.service';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { MultipartDTO } from './documents.dto';
@@ -64,6 +63,7 @@ export class DocumentsController {
     }[],
     @Req() request,
   ) {
+    console.log('===========', files)
     const token = request.headers.authorization.split(' ')[1];
     return this.documentsService.createFiles(files, token);
   }
