@@ -8,6 +8,7 @@ import { DocumentsModule } from './documents/documents.module';
 import { ResendService } from './resend/resend.service';
 import { DatesModule } from './dates/dates.module';
 import { EventsModule } from './events/events.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { EventsModule } from './events/events.module';
     DocumentsModule,
     DatesModule,
     EventsModule,
+    PaymentModule,
   ],
   controllers: [],
   providers: [ConnectionService, ResendService],

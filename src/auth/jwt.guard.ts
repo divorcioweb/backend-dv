@@ -1,24 +1,35 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
+  constructor(private readonly jwtService: JwtService) {}
 
-  async canActivate(context: ExecutionContext) {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = request.headers['authorization'];
+    const authorizationHeader = request.headers['authorization'];
 
-    if (!token || !token.startsWith('Bearer ')) {
-      return false;
+    if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
+      throw new UnauthorizedException(
+        'Token de autorização não encontrado ou formato inválido.',
+      );
     }
 
-    const authToken = token.split(' ')[1];
+    const token = authorizationHeader.split(' ')[1];
+
     try {
-      const decoded = await this.jwtService.decode(authToken);
-      return decoded === null ? false : true;
+      const decoded = await this.jwtService.verifyAsync(token, {
+        secret: process.env.KEY_SECRET_JWT,
+      });
+      request.user = decoded;
+      return true;
     } catch (err) {
-      return false;
+      throw new UnauthorizedException('Token inválido.');
     }
   }
 }
