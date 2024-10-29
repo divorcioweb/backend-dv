@@ -44,9 +44,14 @@ export class PaymentService {
   }
 
   async confirmPayment(body: any) {
-    const parsed = JSON.parse(body)
-
-    console.log('1', body.data)
-    console.log('2', parsed.data)
+    const parsed = body;
+  
+    console.log('1', body.data); // Exibe o conteúdo de data
+    console.log('2', parsed.data); // Exibe o conteúdo de data do objeto parsed
+  
+    // Acessando o metadata
+    const metadata = parsed.data.object.metadata;
+    console.log('Metadata:', metadata);
   }
+  
 }
