@@ -45,5 +45,6 @@ export class PaymentService {
 
   async confirmPayment(body: any) {
     console.log(body.metadata)
+    console.log(body)
   }
 }
