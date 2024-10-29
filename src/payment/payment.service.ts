@@ -1,8 +1,8 @@
 import { JwtService } from '@nestjs/jwt';
 import { Injectable } from '@nestjs/common';
 import { PaymentDTO } from './payment.dto';
-import Stripe from 'stripe';
 import { ConnectionService } from 'src/connection/connection.service';
+import Stripe from 'stripe';
 
 @Injectable()
 export class PaymentService {
@@ -41,5 +41,9 @@ export class PaymentService {
     });
 
     return { paymentIntent: paymentIntent.client_secret };
+  }
+
+  async confirmPayment(body: any) {
+    console.log(body.metadata)
   }
 }
