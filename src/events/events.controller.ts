@@ -18,7 +18,7 @@ export class EventsController {
     return await this.eventsService.create(body, user);
   }
 
-  @Post()
+  @Post('status')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access-token')
   async status(@Body() body: StatusDTO, @Req() req) {
