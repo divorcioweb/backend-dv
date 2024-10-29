@@ -27,13 +27,17 @@ export class PaymentService {
 
     return await this.createPaymentIntent(
       (body.porcentagem / 100) * payment.total,
+      user,
     );
   }
 
-  async createPaymentIntent(amount: number) {
+  async createPaymentIntent(amount: number, user: any) {
     const paymentIntent = await this.stripe.paymentIntents.create({
       amount,
       currency: 'brl',
+      metadata: {
+        ...user,
+      },
     });
 
     return { paymentIntent: paymentIntent.client_secret };
