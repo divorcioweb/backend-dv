@@ -44,7 +44,9 @@ export class PaymentService {
   }
 
   async confirmPayment(body: any) {
-    console.log(body.data)
-    console.log(body)
+    const parsed = JSON.parse(body)
+
+    console.log('1', body.data)
+    console.log('2', parsed.data)
   }
 }
