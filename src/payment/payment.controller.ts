@@ -19,6 +19,6 @@ export class PaymentController {
 
   @Post('webhook')
   async updatePayment (@Body() body: any) {
-    return this.paymentService.confirmPayment(body)
+    return this.paymentService.confirmPayment(JSON.parse(body))
   }
 }
