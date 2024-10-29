@@ -25,7 +25,7 @@ export class PaymentService {
       },
     });
 
-    return await this.createPaymentIntent(payment.total / body.porcentagem);
+    return await this.createPaymentIntent((body.porcentagem / 100) * payment.total);
   }
 
   async createPaymentIntent(amount: number) {
