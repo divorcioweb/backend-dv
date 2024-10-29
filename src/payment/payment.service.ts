@@ -25,7 +25,9 @@ export class PaymentService {
       },
     });
 
-    return await this.createPaymentIntent((body.porcentagem / 100) * payment.total);
+    return await this.createPaymentIntent(
+      (body.porcentagem / 100) * payment.total,
+    );
   }
 
   async createPaymentIntent(amount: number) {
@@ -34,6 +36,6 @@ export class PaymentService {
       currency: 'brl',
     });
 
-    return paymentIntent.client_secret;
+    return { paymentIntent: paymentIntent.client_secret };
   }
 }
