@@ -16,3 +16,26 @@ export class EventDTO {
   @IsNotEmpty()
   titulo: string;
 }
+
+export class StatusDTO {
+  @ApiProperty({
+    example: '2024-08-26T14:29:04.105Z',
+  })
+  @IsNotEmpty()
+  @IsString()
+  data: string;
+
+  @ApiProperty({
+    example: 'Cadastro no aplicativo',
+  })
+  @IsString()
+  @IsNotEmpty()
+  titulo: string;
+
+  @ApiProperty({
+    example: 'Aguardando ...',
+  })
+  @IsString()
+  @IsNotEmpty()
+  status: string;
+}

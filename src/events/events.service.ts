@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConnectionService } from 'src/connection/connection.service';
-import { EventDTO } from './events.dto';
+import { EventDTO, StatusDTO } from './events.dto';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -10,11 +10,31 @@ export class EventsService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async create(body: EventDTO, token: string) {
-    const userDecoded = await this.jwtService.decode(token);
+  async create(body: EventDTO, user: any) {
+    return await this.db.evento.create({
+      data: {
+        ...body,
+        usuario_id: user.id,
+      },
+    });
+  }
 
-    return this.db.evento.create({
-      data: body,
+  async statusUpdate({ data, status, titulo }: StatusDTO, user: any) {
+    await this.db.evento.create({
+      data: {
+        titulo,
+        data,
+        usuario_id: user.id,
+      },
+    });
+
+    await this.db.usuario.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        status,
+      },
     });
   }
 }
