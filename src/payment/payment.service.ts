@@ -87,21 +87,29 @@ export class PaymentService {
         },
       });
 
-      const user = await this.db.usuario.update({
+      const user = await this.db.usuario.findFirst({
         where: {
           id: id,
         },
-        data: {
-          status: 'Aguardando envio de documentos',
-        },
       });
+
+      if (user.status === 'Aguardando confirmação de pagamento') {
+        await this.db.usuario.update({
+          where: {
+            id: id,
+          },
+          data: {
+            status: 'Aguardando envio de documentos',
+          },
+        });
+      }
 
       await this.db.usuario.update({
         where: {
           id: user.usuario_id,
         },
         data: {
-          status: 'Aguardando envio de documentos'
+          status: 'Aguardando envio de documentos',
         },
       });
 
