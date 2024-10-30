@@ -45,14 +45,34 @@ export class PaymentService {
 
   async confirmPayment(body: any) {
     const parsed = body;
-  
 
-    const id = parsed.data.object.metadata.id;
-    const status = parsed.data.object.status
-    const amount_received = parsed.data.object.amount_received
-    console.log('id:', id);
-    console.log('id:', status);
-    console.log('id:', amount_received);
+    const { id } = parsed.data.object.metadata;
+    const { amount_received } = parsed.data.object;
+
+    const porcentagem =
+      amount_received === 4000 ? 100 : amount_received === 2000 ? 50 : 10;
+
+    await this.db.pagamento.update({
+      where: {
+        usuario_id: id,
+      },
+      data: {
+        valor_pago: amount_received,
+        pago: true,
+        porcentagem,
+      },
+    });
+
+    return await this.db.usuario.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: 'Aguardando envio de documentos',
+      },
+      select: {
+        senha: false,
+      },
+    });
   }
-  
 }
