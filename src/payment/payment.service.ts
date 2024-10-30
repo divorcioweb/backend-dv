@@ -52,27 +52,69 @@ export class PaymentService {
     const porcentagem =
       amount_received === 4000 ? 100 : amount_received === 2000 ? 50 : 10;
 
-    await this.db.pagamento.update({
-      where: {
-        usuario_id: id,
-      },
-      data: {
-        valor_pago: amount_received,
-        pago: true,
-        porcentagem,
-      },
-    });
+    if (porcentagem !== 100) {
+      await this.db.pagamento.update({
+        where: {
+          usuario_id: id,
+        },
+        data: {
+          valor_pago: amount_received,
+          pago: true,
+          porcentagem,
+        },
+      });
 
-    return await this.db.usuario.update({
-      where: {
-        id: id,
-      },
-      data: {
-        status: 'Aguardando envio de documentos',
-      },
-      select: {
-        senha: false,
-      },
-    });
+      return await this.db.usuario.update({
+        where: {
+          id: id,
+        },
+        data: {
+          status: 'Aguardando envio de documentos',
+        },
+        select: {
+          senha: false,
+        },
+      });
+    } else {
+      await this.db.pagamento.update({
+        where: {
+          usuario_id: id,
+        },
+        data: {
+          valor_pago: amount_received,
+          pago: true,
+          porcentagem,
+        },
+      });
+
+      const user = await this.db.usuario.update({
+        where: {
+          id: id,
+        },
+        data: {
+          status: 'Aguardando envio de documentos',
+        },
+      });
+
+      await this.db.usuario.update({
+        where: {
+          id: user.usuario_id,
+        },
+        data: {
+          status: 'Aguardando envio de documentos'
+        },
+      });
+
+      await this.db.pagamento.update({
+        where: {
+          usuario_id: user.usuario_id,
+        },
+        data: {
+          valor_pago: 0,
+          pago: true,
+          porcentagem: 0,
+        },
+      });
+    }
   }
 }

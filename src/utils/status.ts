@@ -30,3 +30,13 @@ export const statusUsuario = {
   8: 'Envio de documentos',
   9: 'Minuta do divórcio',
 };
+
+export const statusUser = {
+  1: "Aguardando finalizar cadastro",
+  2: "Aguardando aceite do contrato de serviços",
+  3: "Aguardando confirmação de pagamento",
+  4: "Aguardando envio de documentos",
+  5: "Aguardando renuncio de alimentos",
+  6: "Aguardando aceite da minuta",
+  7: "Aguardando agendamento de audiencia",
+};
