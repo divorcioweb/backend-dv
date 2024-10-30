@@ -87,7 +87,7 @@ export class PaymentService {
         },
       });
 
-      const user = await this.db.usuario.findFirst({
+      const user = await this.db.usuario.findUnique({
         where: {
           id: id,
         },

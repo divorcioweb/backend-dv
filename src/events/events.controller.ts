@@ -25,4 +25,12 @@ export class EventsController {
     const user = req.user;
     return await this.eventsService.statusUpdate(body, user);
   }
+
+  @Post('status-provision')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  async statusConjuge(@Body() body: StatusDTO, @Req() req) {
+    const user = req.user;
+    return await this.eventsService.statusUpdateConjuge(body, user);
+  }
 }
