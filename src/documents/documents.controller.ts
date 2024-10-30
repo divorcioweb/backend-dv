@@ -36,23 +36,6 @@ export class DocumentsController {
   @Post('several')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access-token')
-  // @ApiConsumes('multipart/form-data')
-  // @ApiBody({
-  //   description: 'Upload multiple files',
-  //   schema: {
-  //     type: 'object',
-  //     properties: {
-  //       files: {
-  //         type: 'array',
-  //         items: {
-  //           type: 'string',
-  //           format: 'binary',
-  //         },
-  //       },
-  //     },
-  //   },
-  // })
-  // @UseInterceptors(FilesInterceptor('files'))
   async uploadFiles(
     @Body()
     files: {
@@ -63,8 +46,8 @@ export class DocumentsController {
     }[],
     @Req() request,
   ) {
-    const token = request.headers.authorization.split(' ')[1];
-    return this.documentsService.createFiles(files, token);
+    const user = request.user;
+    return this.documentsService.createFiles(files, user);
   }
 
   @Get()

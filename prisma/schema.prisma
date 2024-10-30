@@ -42,6 +42,7 @@ model usuario {
   status                    String?
   criado_em                 DateTime    @default(now())
   atualizado_em             DateTime    @updatedAt
+
   endereco                  endereco?
   pagamento                 pagamento?
   documentos                documento[]
@@ -54,6 +55,7 @@ model usuario {
 
   divorcio    divorcio? @relation(fields: [divorcio_id], references: [id])
   divorcio_id String?
+  
   evento      evento[]
 }
 
