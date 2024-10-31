@@ -68,6 +68,7 @@ export class UsersService {
         porcentagem: null,
         valor_pago: null,
         usuario_id: userCreated.id,
+        total: Number(process.env.AMOUNT_PROCESS),
       },
     });
 
@@ -134,6 +135,7 @@ export class UsersService {
         pago: false,
         porcentagem: null,
         valor_pago: null,
+        total: Number(process.env.AMOUNT_PROCESS),
         usuario_id: conjugeCreated.id,
       },
     });

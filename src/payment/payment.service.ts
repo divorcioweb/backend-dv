@@ -50,7 +50,7 @@ export class PaymentService {
     const { amount_received } = parsed.data.object;
 
     const porcentagem =
-      amount_received === 4000 ? 100 : amount_received === 2000 ? 50 : 10;
+      amount_received === Number(process.env.AMOUNT_PROCESS) ? 100 : amount_received === (Number(process.env.AMOUNT_PROCESS) / 2) ? 50 : 10;
 
     if (porcentagem !== 100) {
       await this.db.pagamento.update({
