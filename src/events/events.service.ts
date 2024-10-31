@@ -38,7 +38,10 @@ export class EventsService {
     });
   }
 
-  async statusUpdateConjuge({ data, status, titulo }: StatusDTO, user: any) {
+  async statusUpdateWithProvision(
+    { data, status, titulo }: StatusDTO,
+    user: any,
+  ) {
     await this.db.evento.create({
       data: {
         titulo,
@@ -82,5 +85,13 @@ export class EventsService {
         },
       });
     }
+  }
+
+  async find(user: any) {
+    return await this.db.evento.findMany({
+      where: {
+        usuario_id: user.id,
+      },
+    });
   }
 }
