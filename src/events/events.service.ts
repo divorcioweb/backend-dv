@@ -76,12 +76,18 @@ export class EventsService {
       usuario.usuario_vinculado.pagamento.porcentagem === 100 &&
       usuario.usuario_vinculado.pagamento.pago === true
     ) {
-      await this.db.usuario.update({
+      return await this.db.usuario.update({
         where: {
           id: user.id,
         },
         data: {
           status: 'Aguardando envio de documentos',
+        },
+      });
+    } else {
+      return await this.db.usuario.findUnique({
+        where: {
+          id: user.id,
         },
       });
     }
