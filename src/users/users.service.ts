@@ -175,6 +175,7 @@ export class UsersService {
       nome_solteiro,
       profissao,
       rg,
+      nao_possui_filhos_menores,
     } = body;
     const { cep, cidade, complemento, estado, pais } = body.endereco;
 
@@ -190,6 +191,7 @@ export class UsersService {
         profissao,
         naturalidade,
         nome_solteiro,
+        nao_possui_filhos_menores,
       },
     });
 
