@@ -2,7 +2,6 @@ import { JwtService } from '@nestjs/jwt';
 import { Injectable } from '@nestjs/common';
 import { ConnectionService } from 'src/connection/connection.service';
 import * as AWS from 'aws-sdk';
-import { promises as fs } from 'fs';
 
 @Injectable()
 export class DocumentsService {
@@ -57,16 +56,12 @@ export class DocumentsService {
     });
 
     const uploadPromises = files.map(async (file) => {
-      const fileBuffer = await fs.readFile(file.content);
-
-      const base64 = fileBuffer.toString('base64');
-
-      const buffer = Buffer.from(base64, 'base64');
+      // const buffer = Buffer.from(file.content, 'base64');
 
       const params = {
         Bucket: process.env.S3_BUCKET_NAME,
         Key: file.nome,
-        Body: buffer,
+        Body: file.content,
       };
 
       const { Key, Location } = await s3.upload(params).promise();
