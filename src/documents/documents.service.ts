@@ -53,12 +53,10 @@ export class DocumentsService {
     });
 
     const uploadPromises = files.map(async (file) => {
-      // const buffer = Buffer.from(file.content, 'base64');
-
       console.log('==', file)
       const params = {
         Bucket: process.env.S3_BUCKET_NAME,
-        Key: file.nome,
+        Key: file.originalname,
         Body: file.buffer,
       };
 
