@@ -1,17 +1,17 @@
 import {
-  Body,
   Controller,
   Get,
   Post,
   Req,
   UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { DocumentsService } from './documents.service';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MultipartDTO } from './documents.dto';
 
 @ApiTags('Documentos')
@@ -33,22 +33,49 @@ export class DocumentsController {
     return this.documentsService.create(file, token);
   }
 
-  @Post('several')
+  @Post('files')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access-token')
-  async uploadFiles(
-    @Body()
-    files: {
-      content: string;
-      contentType: string;
-      nome: string;
-      tipo: string;
-    }[],
-    @Req() request,
-  ) {
-    const user = request.user;
-    return this.documentsService.createFiles(files, user);
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Upload multiple files',
+    schema: {
+      type: 'object',
+      properties: {
+        files: {
+          type: 'array',
+          items: {
+            type: 'string',
+            format: 'binary',
+          },
+        },
+      },
+    },
+  })
+  @ApiOperation({ summary: 'Upload multiple files' })
+  @UseInterceptors(FilesInterceptor('files')) // 'files' é o nome do campo para os arquivos
+  async uploads(@UploadedFiles() files: Express.Multer.File[], @Req() request) {
+    const token = request.headers.authorization.split(' ')[1];
+    return this.documentsService.createFiles(files, token); // Ajuste o método para lidar com múltiplos arquivos
   }
+
+
+  // @Post('several')
+  // @UseGuards(JwtAuthGuard)
+  // @ApiBearerAuth('access-token')
+  // async uploadFiles(
+  //   @Body()
+  //   files: {
+  //     content: string;
+  //     contentType: string;
+  //     nome: string;
+  //     tipo: string;
+  //   }[],
+  //   @Req() request,
+  // ) {
+  //   const user = request.user;
+  //   return this.documentsService(files, user);
+  // }
 
   @Get()
   @ApiBearerAuth('access-token')

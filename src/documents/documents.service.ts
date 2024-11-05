@@ -39,13 +39,10 @@ export class DocumentsService {
     return document;
   }
 
+  
+
   async createFiles(
-    files: {
-      content: string;
-      contentType: string;
-      nome: string;
-      tipo: string;
-    }[],
+    files: Express.Multer.File[],
     user: any,
   ) {
     const s3 = new AWS.S3({
@@ -60,8 +57,8 @@ export class DocumentsService {
 
       const params = {
         Bucket: process.env.S3_BUCKET_NAME,
-        Key: file.nome,
-        Body: file.content,
+        Key: file.filename,
+        Body: file.buffer,
       };
 
       const { Key, Location } = await s3.upload(params).promise();
