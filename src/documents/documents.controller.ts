@@ -53,10 +53,10 @@ export class DocumentsController {
     },
   })
   @ApiOperation({ summary: 'Upload multiple files' })
-  @UseInterceptors(FilesInterceptor('files')) // 'files' é o nome do campo para os arquivos
-  async uploads(@UploadedFiles() files: Express.Multer.File[], @Req() request) {
-    const token = request.headers.authorization.split(' ')[1];
-    return this.documentsService.createFiles(files, token); // Ajuste o método para lidar com múltiplos arquivos
+  @UseInterceptors(FilesInterceptor('files')) 
+  async uploads(@UploadedFiles() files: Express.Multer.File[], @Req() request: any) {
+    const user = request.user;
+    return this.documentsService.createFiles(files, user); 
   }
 
 
