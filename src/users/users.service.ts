@@ -343,6 +343,7 @@ export class UsersService {
             nome_solteiro: true,
             profissao: true,
             status: true,
+            senha: false,
             telefone: true,
             type: true,
             pagamento: {
@@ -541,7 +542,7 @@ export class UsersService {
             estado_civil: true,
             profissao: true,
             telefone: true,
-            senha: true,
+            senha: false,
             status: true,
             endereco: true,
             criado_em: true,
