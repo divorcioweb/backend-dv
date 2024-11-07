@@ -191,3 +191,59 @@ export class UpdateDTO {
   })
   conjuge: ConjugeDTO;
 }
+
+export class UpdateConjugeDTO {
+  @ApiProperty({
+    example: 'string',
+  })
+  @IsString()
+  nome: string;
+
+  @ApiProperty({
+    example: false,
+  })
+  @IsBoolean()
+  nome_solteiro: boolean;
+
+  @ApiProperty({
+    example: 'string',
+  })
+  @IsString()
+  telefone: string;
+
+  @ApiProperty({
+    example: 'string',
+  })
+  @IsString()
+  naturalidade: string;
+
+  @ApiProperty({
+    example: 'string',
+  })
+  @IsString()
+  estado_civil: string;
+
+  @ApiProperty({
+    example: 'string',
+  })
+  @IsString()
+  profissao: string;
+
+  @ApiProperty({
+    example: 'string',
+  })
+  @IsString()
+  rg: string;
+
+  @ApiProperty({
+    example: 'string',
+  })
+  @IsString()
+  cpf: string;
+
+  @ApiProperty({
+    type: AddressDTO,
+    description: 'Endereço do usuário',
+  })
+  endereco: AddressDTO;
+}

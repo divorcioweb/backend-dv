@@ -10,6 +10,7 @@ import {
   ChangePasswordDTO,
   ConjugeDTO,
   ForgotPasswordStepTwoDTO,
+  UpdateConjugeDTO,
   UpdateDTO,
   UserDTO,
 } from './users.dto';
@@ -85,7 +86,11 @@ export class UsersService {
     };
   }
 
-  async registerConjuge(userDecoded, conjuge: ConjugeDTO) {
+  async registerConjuge(
+    userDecoded: any,
+    conjuge: ConjugeDTO,
+    nao_possui_filhos_menores: boolean,
+  ) {
     const conjugeCreated = await this.db.usuario.create({
       data: {
         nome: conjuge.nome,
@@ -101,6 +106,7 @@ export class UsersService {
         status: 'Aguardando finalizar cadastro',
         usuario_id: userDecoded.id,
         senha: bcrypt.hashSync(conjuge.email, 10),
+        nao_possui_filhos_menores,
       },
       select: {
         id: true,
@@ -208,7 +214,11 @@ export class UsersService {
       },
     });
 
-    const conjuge = await this.registerConjuge(userDecoded, body.conjuge);
+    const conjuge = await this.registerConjuge(
+      userDecoded,
+      body.conjuge,
+      nao_possui_filhos_menores,
+    );
 
     const divorceRecord = await this.db.divorcio.findFirst({
       where: {
@@ -222,6 +232,52 @@ export class UsersService {
       },
       data: {
         usuario_secundario_id: conjuge.id,
+      },
+    });
+
+    return {
+      message: 'Informações salva com sucesso!',
+      error: false,
+    };
+  }
+
+  async updateConjuge(user: any, body: UpdateConjugeDTO) {
+    const {
+      nome,
+      cpf,
+      estado_civil,
+      naturalidade,
+      nome_solteiro,
+      profissao,
+      rg,
+    } = body;
+    const { cep, cidade, complemento, estado, pais } = body.endereco;
+
+    await this.db.usuario.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        nome,
+        cpf,
+        rg,
+        estado_civil,
+        profissao,
+        naturalidade,
+        nome_solteiro,
+      },
+    });
+
+    await this.db.endereco.update({
+      where: {
+        usuario_id: user.id,
+      },
+      data: {
+        cep,
+        cidade,
+        complemento,
+        estado,
+        pais,
       },
     });
 

@@ -13,6 +13,7 @@ import {
   ChangePasswordDTO,
   ForgotPasswordStepOneDTO,
   ForgotPasswordStepTwoDTO,
+  UpdateConjugeDTO,
   UpdateDTO,
   UserDTO,
 } from './users.dto';
@@ -69,11 +70,11 @@ export class UsersController {
     return await this.usersService.forgotPassword(body);
   }
 
-  // @Post('register/conjuge')
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth('access-token')
-  // async createConjuge(@Body() conjuge: ConjugeDTO, @Req() request) {
-  //   const token = request.headers.authorization.split(' ')[1];
-  //   return await this.usersService.registerConjuge(token, conjuge);
-  // }
+  @Patch('update/conjuge')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  async createConjuge(@Body() conjuge: UpdateConjugeDTO, @Req() request) {
+    const user = request.user;
+    return await this.usersService.updateConjuge(user, conjuge);
+  }
 }
