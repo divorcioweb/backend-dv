@@ -84,6 +84,10 @@ export class PaymentService {
           status: 'Aguardando envio de documentos',
         },
         select: {
+          id: true,
+          cpf: true,
+          email: true,
+          nome: true,
           conjuge: true,
         },
       });
@@ -97,6 +101,8 @@ export class PaymentService {
           valor_pago: Number(process.env.AMOUNT_PROCESS) / amount_received,
         },
       });
+
+      return user;
     } else {
       await this.db.pagamento.update({
         where: {
