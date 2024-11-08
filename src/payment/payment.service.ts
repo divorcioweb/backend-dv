@@ -50,7 +50,19 @@ export class PaymentService {
     const { amount_received } = parsed.data.object;
 
     const porcentagem =
-      amount_received === Number(process.env.AMOUNT_PROCESS) ? 100 : amount_received === (Number(process.env.AMOUNT_PROCESS) / 2) ? 50 : 10;
+      amount_received === Number(process.env.AMOUNT_PROCESS)
+        ? 100
+        : amount_received === Number(process.env.AMOUNT_PROCESS) / 2
+          ? 50
+          : 10;
+
+    await this.db.evento.create({
+      data: {
+        data: new Date().toISOString(),
+        titulo: 'Pagamento feito!',
+        usuario_id: id,
+      },
+    });
 
     if (porcentagem !== 100) {
       await this.db.pagamento.update({
@@ -64,7 +76,7 @@ export class PaymentService {
         },
       });
 
-      return await this.db.usuario.update({
+      const user = await this.db.usuario.update({
         where: {
           id: id,
         },
@@ -72,7 +84,17 @@ export class PaymentService {
           status: 'Aguardando envio de documentos',
         },
         select: {
-          senha: false,
+          conjuge: true,
+        },
+      });
+
+      await this.db.pagamento.update({
+        where: {
+          id: user.conjuge.id,
+        },
+        data: {
+          porcentagem,
+          valor_pago: Number(process.env.AMOUNT_PROCESS) / amount_received,
         },
       });
     } else {
