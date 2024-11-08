@@ -89,6 +89,7 @@ export class PaymentService {
           email: true,
           nome: true,
           conjuge: true,
+          pagamento: true,
         },
       });
 
@@ -98,7 +99,7 @@ export class PaymentService {
         },
         data: {
           porcentagem,
-          valor_pago: Number(process.env.AMOUNT_PROCESS) / amount_received,
+          valor_pago: user.pagamento.total / amount_received,
         },
       });
 
