@@ -95,18 +95,16 @@ export class PaymentService {
           pagamento: true,
         },
       });
-      console.log('---3');
 
       await this.db.pagamento.update({
         where: {
-          id: user.conjuge.id,
+          usuario_id: user.conjuge.id,
         },
         data: {
           porcentagem,
           valor_pago: user.pagamento.total / amount_received,
         },
       });
-      console.log('---4');
 
       return user;
     } else {
