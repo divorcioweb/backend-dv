@@ -65,7 +65,6 @@ export class PaymentService {
     });
 
     if (porcentagem !== 100) {
-      console.log('---1');
       await this.db.pagamento.update({
         where: {
           usuario_id: id,
@@ -77,7 +76,6 @@ export class PaymentService {
         },
       });
 
-      console.log('---2');
 
       const user = await this.db.usuario.update({
         where: {
@@ -102,7 +100,7 @@ export class PaymentService {
         },
         data: {
           porcentagem,
-          valor_pago: user.pagamento.total / amount_received,
+          valor_pago: user.pagamento.total - amount_received,
         },
       });
 
