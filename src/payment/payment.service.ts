@@ -64,79 +64,114 @@ export class PaymentService {
       },
     });
 
-    if (porcentagem !== 100) {
-      await this.db.pagamento.update({
-        where: {
-          usuario_id: id,
-        },
-        data: {
-          valor_pago: amount_received,
-          pago: true,
-          porcentagem,
-        },
-      });
+    const user = await this.db.usuario.findUnique({
+      where: {
+        id: id,
+      },
+    });
 
+    if (user.type === 1) {
+      if (porcentagem !== 100) {
+        await this.db.pagamento.update({
+          where: {
+            usuario_id: id,
+          },
+          data: {
+            valor_pago: amount_received,
+            pago: true,
+            porcentagem,
+          },
+        });
 
-      const user = await this.db.usuario.update({
-        where: {
-          id: id,
-        },
-        data: {
-          status: 'Aguardando envio de documentos',
-        },
-        select: {
-          id: true,
-          cpf: true,
-          email: true,
-          nome: true,
-          conjuge: true,
-          pagamento: true,
-        },
-      });
-
-      await this.db.pagamento.update({
-        where: {
-          usuario_id: user.conjuge.id,
-        },
-        data: {
-          porcentagem,
-          valor_pago: user.pagamento.total - amount_received,
-        },
-      });
-
-      return user;
-    } else {
-      await this.db.pagamento.update({
-        where: {
-          usuario_id: id,
-        },
-        data: {
-          valor_pago: amount_received,
-          pago: true,
-          porcentagem,
-        },
-      });
-
-      const user = await this.db.usuario.findUnique({
-        where: {
-          id: id,
-        },
-      });
-
-      if (user.status === 'Aguardando confirmação de pagamento') {
-        await this.db.usuario.update({
+        const user = await this.db.usuario.update({
           where: {
             id: id,
           },
           data: {
             status: 'Aguardando envio de documentos',
           },
+          select: {
+            id: true,
+            cpf: true,
+            email: true,
+            nome: true,
+            conjuge: true,
+            pagamento: true,
+          },
+        });
+
+        await this.db.pagamento.update({
+          where: {
+            usuario_id: user.conjuge.id,
+          },
+          data: {
+            porcentagem,
+            valor_pago: user.pagamento.total - amount_received,
+          },
+        });
+
+        return user;
+      } else {
+        await this.db.pagamento.update({
+          where: {
+            usuario_id: id,
+          },
+          data: {
+            valor_pago: amount_received,
+            pago: true,
+            porcentagem,
+          },
+        });
+
+        const user = await this.db.usuario.findUnique({
+          where: {
+            id: id,
+          },
+        });
+
+        if (user.status === 'Aguardando confirmação de pagamento') {
+          await this.db.usuario.update({
+            where: {
+              id: id,
+            },
+            data: {
+              status: 'Aguardando envio de documentos',
+            },
+          });
+        }
+
+        await this.db.usuario.update({
+          where: {
+            id: user.usuario_id,
+          },
+          data: {
+            status: 'Aguardando envio de documentos',
+          },
+        });
+
+        await this.db.pagamento.update({
+          where: {
+            usuario_id: user.usuario_id,
+          },
+          data: {
+            valor_pago: 0,
+            pago: true,
+            porcentagem: 0,
+          },
         });
       }
+    } else {
+      await this.db.evento.create({
+        data: {
+          data: new Date().toISOString(),
+          titulo: 'Pagamento feito!',
+          usuario_id: id,
+        },
+      });
 
       await this.db.usuario.update({
         where: {
-          id: user.usuario_id,
+          id: id,
         },
         data: {
           status: 'Aguardando envio de documentos',
@@ -145,12 +180,10 @@ export class PaymentService {
 
       await this.db.pagamento.update({
         where: {
-          usuario_id: user.usuario_id,
+          usuario_id: id,
         },
         data: {
-          valor_pago: 0,
           pago: true,
-          porcentagem: 0,
         },
       });
     }
