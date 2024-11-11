@@ -98,6 +98,9 @@ export class EventsService {
       where: {
         usuario_id: user.id,
       },
+      orderBy: {
+        data: 'asc', // 'asc' para ordem crescente; use 'desc' para ordem decrescente
+      },
     });
   }
 }

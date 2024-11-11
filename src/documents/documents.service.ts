@@ -39,12 +39,7 @@ export class DocumentsService {
     return document;
   }
 
-  
-
-  async createFiles(
-    files: any[],
-    user: any,
-  ) {
+  async createFiles(files: any[], user: any) {
     const s3 = new AWS.S3({
       credentials: {
         accessKeyId: process.env.S3_ACCESS_KEY,
@@ -53,7 +48,7 @@ export class DocumentsService {
     });
 
     const uploadPromises = files.map(async (file) => {
-      console.log('==', file)
+      console.log('==', file);
       const params = {
         Bucket: process.env.S3_BUCKET_NAME,
         Key: file.originalname,
@@ -89,6 +84,14 @@ export class DocumentsService {
       },
       data: {
         status: 'Aguardando renuncio de alimentos',
+      },
+    });
+
+    await this.db.evento.create({
+      data: {
+        data: new Date().toISOString(),
+        titulo: 'Documentos enviados',
+        usuario_id: user.id,
       },
     });
 
