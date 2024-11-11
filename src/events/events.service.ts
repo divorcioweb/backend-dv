@@ -94,13 +94,30 @@ export class EventsService {
   }
 
   async find(user: any) {
-    return await this.db.evento.findMany({
+    const eventos = await this.db.evento.findMany({
       where: {
         usuario_id: user.id,
       },
       orderBy: {
-        data: 'asc', // 'asc' para ordem crescente; use 'desc' para ordem decrescente
+        data: 'asc',
       },
+    });
+
+    return eventos.map((evento) => {
+      const date = new Date(evento.data);
+
+      const formattedMonth = date
+        .toLocaleString('pt-BR', { month: 'short' })
+        .toUpperCase();
+      const formattedDay = date.getDate();
+
+      return {
+        ...evento,
+        formatted: {
+          mes: formattedMonth,
+          dia: formattedDay,
+        },
+      };
     });
   }
 }
