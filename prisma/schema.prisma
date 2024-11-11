@@ -16,10 +16,14 @@ datasource db {
 model divorcio {
   id String @id @default(uuid())
 
-  etapa                 Int    @default(1)
-  status                String @default("Início do serviço")
+  finalizado    Boolean @default(false)
+  escritura_doc String?
+
   usuario_primario_id   String
   usuario_secundario_id String
+
+  criado_em     DateTime @default(now())
+  atualizado_em DateTime @updatedAt
 
   usuario usuario[]
 }
@@ -56,7 +60,8 @@ model usuario {
   divorcio    divorcio? @relation(fields: [divorcio_id], references: [id])
   divorcio_id String?
 
-  evento evento[]
+  evento      evento[]
+  agendamento agendamento?
 }
 
 model endereco {
@@ -92,6 +97,17 @@ model pagamento {
   pago          Boolean
   criado_em     DateTime @default(now())
   atualizado_em DateTime @updatedAt
+
+  user       usuario? @relation(fields: [usuario_id], references: [id])
+  usuario_id String?  @unique
+}
+
+model agendamento {
+  id                        String   @id @default(uuid())
+  preferencia_dia_da_semana String?
+  preferencia_turno         String?
+  marcado_data              DateTime?
+  marcado                   Boolean  @default(false)
 
   user       usuario? @relation(fields: [usuario_id], references: [id])
   usuario_id String?  @unique
