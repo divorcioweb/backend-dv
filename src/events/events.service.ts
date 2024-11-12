@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConnectionService } from 'src/connection/connection.service';
-import { EventDTO, StatusDTO } from './events.dto';
+import { EventDTO, ScheduleDTO, StatusDTO } from './events.dto';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -118,6 +118,16 @@ export class EventsService {
           dia: formattedDay,
         },
       };
+    });
+  }
+
+  async schedule(user: any, data: ScheduleDTO) {
+    return await this.db.agendamento.create({
+      data: {
+        preferencia_dia_da_semana: data.preferencia_dia_da_semana,
+        preferencia_turno: data.preferencia_turno,
+        usuario_id: user.id,
+      },
     });
   }
 }

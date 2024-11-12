@@ -39,3 +39,19 @@ export class StatusDTO {
   @IsNotEmpty()
   status: string;
 }
+
+export class ScheduleDTO {
+  @ApiProperty({
+    example: 'Segunda',
+  })
+  @IsNotEmpty()
+  @IsString()
+  preferencia_dia_da_semana: string;
+
+  @ApiProperty({
+    example: 'Manhã',
+  })
+  @IsString()
+  @IsNotEmpty()
+  preferencia_turno: string;
+}

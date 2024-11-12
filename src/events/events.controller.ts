@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
-import { EventDTO, StatusDTO } from './events.dto';
+import { EventDTO, ScheduleDTO, StatusDTO } from './events.dto';
 import { EventsService } from './events.service';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -40,5 +40,13 @@ export class EventsController {
   async find(@Req() req: any) {
     const user = req.user;
     return this.eventsService.find(user);
+  }
+
+  @Post('agendamento')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  async schedule(@Req() req: any, @Body() data: ScheduleDTO) {
+    const user = req.user;
+    return this.eventsService.schedule(user, data);
   }
 }
