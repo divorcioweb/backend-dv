@@ -2,6 +2,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Injectable } from '@nestjs/common';
 import { ConnectionService } from 'src/connection/connection.service';
 import * as AWS from 'aws-sdk';
+import * as fs from 'fs/promises'; // Para manipular arquivos no Node.js
 
 @Injectable()
 export class DocumentsService {
@@ -47,33 +48,45 @@ export class DocumentsService {
       },
     });
 
-    console.log('STEP 2', process.env.S3_ACCESS_KEY);
-    console.log('STEP 2', process.env.S3_SECRET_ACCESS);
+    if (!process.env.S3_BUCKET_NAME) {
+      throw new Error('S3 bucket name not configured in environment variables');
+    }
 
     const uploadPromises = files.map(async (file) => {
-      const params = {
-        Bucket: process.env.S3_BUCKET_NAME,
-        Key: user.id + '-' + file.name,
-        Body: file.uri,
-      };
+      try {
+        // Ler o arquivo diretamente do caminho do sistema de arquivos
+        const fileBuffer = await fs.readFile(file.uri);
 
-    console.log('STEP 3');
+        const safeFileName =
+          file.name?.replace(/[^a-zA-Z0-9-_\.]/g, '_') || 'default-name';
 
-      const { Key, Location } = await s3.upload(params).promise();
+        const params = {
+          Bucket: process.env.S3_BUCKET_NAME,
+          Key: `${user.id}-${safeFileName}`, // Nome do arquivo sanitizado
+          Body: fileBuffer,
+          ContentType: file.mimeType, // Tipo MIME
+        };
 
-      const document = await this.db.documento.create({
-        data: {
-          nome: Key,
-          url: Location,
-          usuario_id: user.id,
-        },
-      });
+        const { Key, Location } = await s3.upload(params).promise();
 
-      return document;
+        const document = await this.db.documento.create({
+          data: {
+            nome: Key,
+            url: Location,
+            usuario_id: user.id,
+          },
+        });
+
+        return document;
+      } catch (error) {
+        console.error(`Error uploading file ${file.name}:`, error);
+        throw new Error(`Failed to upload file: ${file.name}`);
+      }
     });
 
     const uploadedDocuments = await Promise.all(uploadPromises);
 
+    // Criar evento e atualizar o status do usuário
     await this.db.evento.create({
       data: {
         titulo: 'Documentos enviado',
@@ -87,15 +100,7 @@ export class DocumentsService {
         id: user.id,
       },
       data: {
-        status: 'Aguardando renuncio de alimentos',
-      },
-    });
-
-    await this.db.evento.create({
-      data: {
-        data: new Date().toISOString(),
-        titulo: 'Documentos enviados',
-        usuario_id: user.id,
+        status: 'Aguardando renúncia de alimentos',
       },
     });
 
