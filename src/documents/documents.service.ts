@@ -53,7 +53,7 @@ export class DocumentsService {
     const uploadPromises = files.map(async (file) => {
       const params = {
         Bucket: process.env.S3_BUCKET_NAME,
-        Key: user.id + '-' + file.originalname,
+        Key: user.id + '-' + file.originalname.replace(' ', '-').trim(),
         Body: file.buffer,
       };
 
