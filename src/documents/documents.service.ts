@@ -58,7 +58,6 @@ export class DocumentsService {
         Key: `images/${user.id}-${sanitizedFileName}`,
         Body: file.buffer,
         ContentType: file.mimetype,
-        ACL: 'public-read',
       };
 
       const { Key, Location } = await s3.upload(params).promise();
