@@ -56,26 +56,9 @@ export class DocumentsController {
   @UseInterceptors(FilesInterceptor('files')) 
   async uploads(@UploadedFiles() files: Express.Multer.File[], @Req() request: any) {
     const user = request.user;
+    console.log('STEP 1', files)
     return this.documentsService.createFiles(files, user); 
   }
-
-
-  // @Post('several')
-  // @UseGuards(JwtAuthGuard)
-  // @ApiBearerAuth('access-token')
-  // async uploadFiles(
-  //   @Body()
-  //   files: {
-  //     content: string;
-  //     contentType: string;
-  //     nome: string;
-  //     tipo: string;
-  //   }[],
-  //   @Req() request,
-  // ) {
-  //   const user = request.user;
-  //   return this.documentsService(files, user);
-  // }
 
   @Get()
   @ApiBearerAuth('access-token')
