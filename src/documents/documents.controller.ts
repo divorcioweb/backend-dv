@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Post,
@@ -36,25 +37,25 @@ export class DocumentsController {
   @Post('files')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access-token')
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    description: 'Upload multiple files',
-    schema: {
-      type: 'object',
-      properties: {
-        files: {
-          type: 'array',
-          items: {
-            type: 'string',
-            format: 'binary',
-          },
-        },
-      },
-    },
-  })
-  @ApiOperation({ summary: 'Upload multiple files' })
-  @UseInterceptors(FilesInterceptor('files')) 
-  async uploads(@UploadedFiles() files: Express.Multer.File[], @Req() request: any) {
+  // @ApiConsumes('multipart/form-data')
+  // @ApiBody({
+  //   description: 'Upload multiple files',
+  //   schema: {
+  //     type: 'object',
+  //     properties: {
+  //       files: {
+  //         type: 'array',
+  //         items: {
+  //           type: 'string',
+  //           format: 'binary',
+  //         },
+  //       },
+  //     },
+  //   },
+  // })
+  // @ApiOperation({ summary: 'Upload multiple files' })
+  // @UseInterceptors(FilesInterceptor('files')) 
+  async uploads(@Body() files: any, @Req() request: any) {
     const user = request.user;
     console.log('STEP 1', files)
     return this.documentsService.createFiles(files, user); 
