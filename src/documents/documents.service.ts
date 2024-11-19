@@ -47,14 +47,19 @@ export class DocumentsService {
       },
     });
 
-
     const uploadPromises = files.map(async (file) => {
+      const sanitizedFileName = file.originalname
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9\.\-_]/g, '');
+
       const params = {
         Bucket: process.env.S3_BUCKET_NAME,
-        Key: user.id + '-' + file.originalname.replace(' ', '-').trim(),
+        Key: `images/${user.id}-${sanitizedFileName}`,
         Body: file.buffer,
+        ContentType: file.mimetype,
+        ACL: 'public-read',
       };
-
 
       const { Key, Location } = await s3.upload(params).promise();
 
