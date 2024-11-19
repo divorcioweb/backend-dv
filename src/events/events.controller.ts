@@ -49,4 +49,12 @@ export class EventsController {
     const user = req.user;
     return this.eventsService.schedule(user, data);
   }
+
+  @Get('escritura')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  async viewScripture(@Req() req: any) {
+    const user = req.user;
+    return this.eventsService.listScripture(user);
+  }
 }

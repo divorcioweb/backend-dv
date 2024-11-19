@@ -130,4 +130,29 @@ export class EventsService {
       },
     });
   }
+
+  async listScripture(user: any) {
+    const userFind = await this.db.usuario.findUnique({
+      where: {
+        id: user.id,
+      },
+      select: {
+        type: true,
+      },
+    });
+
+    if (userFind?.type === 1) {
+      return await this.db.divorcio.findFirst({
+        where: {
+          usuario_primario_id: user.id,
+        },
+      });
+    } else {
+      return await this.db.divorcio.findFirst({
+        where: {
+          usuario_secundario_id: user.id,
+        },
+      });
+    }
+  }
 }

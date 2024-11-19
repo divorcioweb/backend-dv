@@ -4,19 +4,19 @@ generator client {
 
 // datasource db {
 //   provider = "postgresql"
-//   url      = env("DATABASE_URL")
+// url      = "file:./database/db.db"
 // }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  // url      = "file:./database/db.db"
 }
 
 model divorcio {
   id String @id @default(uuid())
 
   finalizado    Boolean @default(false)
+  escritura     Boolean @default(false)
   escritura_doc String?
 
   usuario_primario_id   String
@@ -103,11 +103,11 @@ model pagamento {
 }
 
 model agendamento {
-  id                        String   @id @default(uuid())
+  id                        String    @id @default(uuid())
   preferencia_dia_da_semana String?
   preferencia_turno         String?
   marcado_data              DateTime?
-  marcado                   Boolean  @default(false)
+  marcado                   Boolean   @default(false)
 
   user       usuario? @relation(fields: [usuario_id], references: [id])
   usuario_id String?  @unique
