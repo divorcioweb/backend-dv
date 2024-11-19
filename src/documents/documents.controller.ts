@@ -56,7 +56,6 @@ export class DocumentsController {
   @UseInterceptors(FilesInterceptor('files')) 
   async uploads(@UploadedFiles() files: Express.Multer.File[], @Req() request: any) {
     const user = request.user;
-    console.log('STEP 1', files)
     return this.documentsService.createFiles(files, user); 
   }
 

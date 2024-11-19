@@ -47,8 +47,6 @@ export class DocumentsService {
       },
     });
 
-    console.log('STEP 2', process.env.S3_ACCESS_KEY);
-    console.log('STEP 2', process.env.S3_SECRET_ACCESS);
 
     const uploadPromises = files.map(async (file) => {
       const params = {
@@ -57,7 +55,6 @@ export class DocumentsService {
         Body: file.buffer,
       };
 
-    console.log('STEP 3');
 
       const { Key, Location } = await s3.upload(params).promise();
 
